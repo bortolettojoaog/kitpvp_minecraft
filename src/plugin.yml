@@ -1,0 +1,5 @@
+name: jgbKitPvP
+author: JGB
+main: net.jgb.kitPvP.Main
+version: 0.0.1
+commands:
