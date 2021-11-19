@@ -2,7 +2,7 @@
 
 Plugin for minecraft KitPvP mode
 
-##Icons
+## Icons
 
 - :package: new functionality
 - :up: update
