@@ -46,7 +46,6 @@ You need to have the following tools installed on your machine: [Git](https://gi
 $ git clone <https://github.com/bortolettojoaog/kitpvp_minecraft.git>
 
 # Open the project in intellij
-$ code .
 
 # Download spigot version 1.8.8
 $ <https://www.spigotmc.org/>
