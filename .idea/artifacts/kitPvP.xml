@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="kitPvP">
-    <output-path>E:/Desktop/HD Externo/Backup - 2017/Pastas Principais/Downloads/Minecraft/Servidor/Servidores para teste/Teste De Plugin Criados - Versao 1.8/Servidor 1/plugins</output-path>
-    <root id="archive" name="kitPvP.jar">
-      <element id="module-output" name="Bukkit" />
-    </root>
-  </artifact>
-</component>
