@@ -9,27 +9,27 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
 
-    private static Main plugin;
-    private static Message message;
+    private static Main currentPlugin;
+    private static Message currentMessage;
 
     @Override
     public void onLoad() {
         setPlugin(this);
         setMessage(new Message());
 
-        Bukkit.getConsoleSender().sendMessage(getMessage().getInformationPrefix().replace("{symbol}", "ยง6ยงl!") + "ยง7plugin loading...");
+        Bukkit.getConsoleSender().sendMessage(getMessage().getInformationPrefix().replace("{symbol}", "ง6งl!") +  "ง7plugin loading...");
     }
 
     @Override
     public void onEnable() {
-        Bukkit.getConsoleSender().sendMessage(getMessage().getSucessPrefix().replace("{symbol}", "ยง2ยงl!") + "ยง7plugin successfully activated...");
+        Bukkit.getConsoleSender().sendMessage(getMessage().getSucessPrefix().replace("{symbol}", "ง2งl!") + " ง7plugin successfully activated...");
         init();
     }
 
     @Override
     public void onDisable() {
         setPlugin(null);
-        Bukkit.getConsoleSender().sendMessage(getMessage().getErrorPrefix().replace("{symbol}", "ยง4ยงl!") + "ยง7Plugin successfully disabled...");
+        Bukkit.getConsoleSender().sendMessage(getMessage().getErrorPrefix().replace("{symbol}", "ง4งl!") + " ง7Plugin successfully disabled...");
     }
 
     public void init() {
@@ -41,18 +41,18 @@ public class Main extends JavaPlugin {
     }
 
     public static Main getPlugin() {
-        return plugin;
+        return currentPlugin;
     }
 
-    private void setPlugin(Main plugin) {
-        this.plugin = plugin;
+    private void setPlugin(Main main) {
+    	currentPlugin = main;
     }
 
     public static Message getMessage() {
-        return message;
+        return currentMessage;
     }
 
     private void setMessage(Message message) {
-        Main.message = message;
+    	currentMessage = message;
     }
 }
