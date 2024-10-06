@@ -1,6 +1,6 @@
 package net.jgb.kitPvP.enums;
 
-public enum ItemNames {
+public enum ItemEnum {
 	
 	EMERALD("Roleta da Sorte"),
 	CHEST("Menu"),
@@ -8,7 +8,7 @@ public enum ItemNames {
 	
 	String displayName;
 	
-	ItemNames(String displayName) {
+	ItemEnum(String displayName) {
 		this.displayName = displayName;
 	}
 	
