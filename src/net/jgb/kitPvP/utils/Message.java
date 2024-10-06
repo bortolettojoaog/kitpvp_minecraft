@@ -7,10 +7,10 @@ public class Message {
     }
 
 
-    private String information = "ยง8ยงl(ยง6ยงl!ยง8ยงl)ยงr";
-    private String success = "ยง8ยงl(ยง2ยงl!ยง8ยงl)ยงr";
-    private String error = "ยง8ยงl(ยง4ยงl!ยง8ยงl)ยงr";
-    private String message = "ยง8ยงl(ยงeยงlโ€ขยง8ยงl)ยงr";
+    private String information = "ง8งl(ง6งl!ง8งl)งr";
+    private String success = "ง8งl(ง2งl!ง8งl)งr";
+    private String error = "ง8งl(ง4งl!ง8งl)งr";
+    private String message = "ง8งl(งeงl•ง8งl)งr";
 
     public String getInformationPrefix() {
         return information;
