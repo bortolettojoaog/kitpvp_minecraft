@@ -1,14 +1,20 @@
 package net.jgb.kitPvP.events;
 
 import net.jgb.kitPvP.Main;
+import net.jgb.kitPvP.constants.ItemConstants;
+import net.jgb.kitPvP.enums.ItemEnum;
+import net.jgb.kitPvP.utils.CustomPlayerInventory;
+
+import java.util.Arrays;
+
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 
@@ -53,26 +59,43 @@ public class PlayerInteract implements Listener {
     public void drop(PlayerDropItemEvent event) {
         ItemStack item = event.getItemDrop().getItemStack();
         Material material = item.getType();
-        if (material.equals(Material.MUSHROOM_SOUP) || material.equals(Material.RED_MUSHROOM) || material.equals(Material.BROWN_MUSHROOM) || material.equals(Material.BOWL)) {
+        boolean customItem = item.getItemMeta().getDisplayName() != null &&
+        		Arrays.stream(ItemEnum.values())
+                      .filter(items -> items.getDisplayName().equals(ChatColor.stripColor(item.getItemMeta().getDisplayName())))
+                      .count() >= 1;
+        
+    	if (customItem) {
+    		event.getPlayer().sendMessage(Main.getMessage().getErrorPrefix() + " §cYou cannot drop this item!");
+    		event.setCancelled(true);
+    		return;
+    	}
+                
+    	boolean soupItem = material.equals(Material.MUSHROOM_SOUP) || material.equals(Material.RED_MUSHROOM) || material.equals(Material.BROWN_MUSHROOM) || material.equals(Material.BOWL);
+        if (soupItem) {
             Bukkit.getScheduler().runTaskLater(Main.getPlugin(), new Runnable() {
                 @Override
                 public void run() {
-                    event.getItemDrop().getLocation().getWorld().playEffect(event.getItemDrop().getLocation(), Effect.SMOKE, Material.REDSTONE.getId());
+                    event.getItemDrop().getLocation().getWorld().playEffect(event.getItemDrop().getLocation(), Effect.SMOKE, Material.REDSTONE.ordinal());
                     event.getItemDrop().remove();
                 }
             }, 20L * 3);
-        } else {
-            event.getItemDrop().remove();
+            
+            return;
         }
+        
+        boolean canDrop = Arrays.stream(ItemConstants.INTERACTIVE_ITEMS).filter(items -> material.name().contains(items)).count() >= 1;
+        if (!canDrop)
+        	event.getItemDrop().remove();
     }
 
     @EventHandler
     public void pickup(PlayerPickupItemEvent event) {
         ItemStack item = event.getItem().getItemStack();
         Material material = item.getType();
-        if (material.name().contains("SWORD")) {
-            event.setCancelled(true);
-        }
+        boolean canPickup = Arrays.stream(ItemConstants.INTERACTIVE_ITEMS).filter(items -> material.name().contains(items)).count() >= 1;
+        if (!canPickup)
+        	event.setCancelled(true);
+        event.setCancelled(false);
     }
 
     @EventHandler
@@ -80,7 +103,9 @@ public class PlayerInteract implements Listener {
         Player player = event.getPlayer();
 
         event.setJoinMessage(null);
-        player.sendMessage(Main.getMessage().getMessagePrefix() + " Â§7be very welcome, Â§f" + player.getName());
+        player.sendMessage(Main.getMessage().getMessagePrefix() + " §7be very welcome, §f" + player.getName());
+        
+        CustomPlayerInventory.addJoinInventory(player);
     }
 
     @EventHandler
@@ -88,6 +113,6 @@ public class PlayerInteract implements Listener {
         Player player = event.getPlayer();
 
         event.setQuitMessage(null);
-        player.sendMessage(Main.getMessage().getMessagePrefix() + " Â§7thanks for playing on our network!");
+        player.sendMessage(Main.getMessage().getMessagePrefix() + " §7thanks for playing on our network!");
     }
 }
