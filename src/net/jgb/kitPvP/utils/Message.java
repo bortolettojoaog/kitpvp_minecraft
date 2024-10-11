@@ -6,7 +6,6 @@ public class Message {
 
     }
 
-
     private String information = "§8§l(§6§l!§8§l)§r";
     private String success = "§8§l(§2§l!§8§l)§r";
     private String error = "§8§l(§4§l!§8§l)§r";

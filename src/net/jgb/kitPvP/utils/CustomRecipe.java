@@ -10,9 +10,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class CustomRecipes {
+@SuppressWarnings("deprecation")
+public class CustomRecipe {
 
-    public static void soupRecipe(Material... materials) {
+	public CustomRecipe() {
+		
+	}
+	
+    public void soupRecipe(Material... materials) {
         ShapelessRecipe recipe = new ShapelessRecipe(new ItemStack(Material.MUSHROOM_SOUP));
         for (Material material : materials) {
             recipe.addIngredient(material);
@@ -21,15 +26,15 @@ public class CustomRecipes {
         Bukkit.addRecipe(recipe);
     }
 
-    public static void soupRecipe(Material material1, Material material2, int dataMaterial1, int dataMaterial2) {
+	public void soupRecipe(Material firstMaterial, Material secondMaterial, int firstData, int secondData) {
         ShapelessRecipe recipe = new ShapelessRecipe(new ItemStack(Material.MUSHROOM_SOUP));
-        recipe.addIngredient(material1.getNewData((byte)dataMaterial1));
-        recipe.addIngredient(material2.getNewData((byte)dataMaterial2));
+        recipe.addIngredient(firstMaterial.getNewData((byte)firstData));
+        recipe.addIngredient(secondMaterial.getNewData((byte)secondData));
 
         Bukkit.addRecipe(recipe);
     }
     
-    public static ItemStack createItem(Material material, int amount, String displayName, List<String> lore) {
+    public ItemStack createItem(Material material, int amount, String displayName, List<String> lore) {
     	ItemStack itemStack = new ItemStack(material, amount);
     	ItemMeta itemMeta = itemStack.getItemMeta();
     	itemMeta.setDisplayName(displayName);
@@ -39,7 +44,7 @@ public class CustomRecipes {
     	return itemStack;
     }
     
-    public static ItemStack createItem(Material material, int amount, String displayName, List<String> lore, int durability) {
+    public ItemStack createItem(Material material, int amount, String displayName, List<String> lore, int durability) {
     	ItemStack itemStack = createItem(material, amount, displayName, lore);
     	ItemMeta itemMeta = itemStack.getItemMeta();
     	itemStack.setDurability((short)durability);
@@ -48,7 +53,7 @@ public class CustomRecipes {
     	return itemStack;
     }
     
-    public static ItemStack createItem(Material material, int amount, String displayName, List<String> lore, short durability, Map<Enchantment, Integer> enchantments) {
+    public ItemStack createItem(Material material, int amount, String displayName, List<String> lore, short durability, Map<Enchantment, Integer> enchantments) {
     	ItemStack itemStack = createItem(material, amount, displayName, lore, durability);
     	ItemMeta itemMeta = itemStack.getItemMeta();
     	for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
@@ -60,5 +65,4 @@ public class CustomRecipes {
     	
     	return itemStack;
     }
-
 }
