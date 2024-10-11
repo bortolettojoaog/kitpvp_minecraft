@@ -1,6 +1,7 @@
 package net.jgb.kitPvP;
 
 import net.jgb.kitPvP.events.Listeners;
+import net.jgb.kitPvP.state.RootState;
 import net.jgb.kitPvP.utils.Utils;
 
 import org.bukkit.Bukkit;
@@ -11,11 +12,13 @@ public class Main extends JavaPlugin {
 
     private static Main currentPlugin;
     private static Utils utils;
+    private static RootState rootState;
 
     @Override
     public void onLoad() {
         setPlugin(this);
         setUtils(new Utils());
+        setRootState(new RootState());
 
         Bukkit.getConsoleSender().sendMessage(utils.messageUtils().getInformationPrefix() +  " §7plugin loading...");
     }
@@ -28,8 +31,13 @@ public class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
+    	Bukkit.getConsoleSender().sendMessage(utils.messageUtils().getErrorPrefix() + " §7Plugin successfully disabled...");
+    	
         setPlugin(null);
-        Bukkit.getConsoleSender().sendMessage(utils.messageUtils().getErrorPrefix() + " §7Plugin successfully disabled...");
+        setUtils(null);
+        
+        getRootState().clean();
+        setRootState(null);
     }
 
     public void init() {
@@ -55,5 +63,13 @@ public class Main extends JavaPlugin {
     
     private void setUtils(Utils utilsClass) {
     	utils = utilsClass;
+    }
+    
+    public static RootState getRootState() {
+        return rootState;
+    }
+    
+    private void setRootState(RootState rootStateClass) {
+    	rootState = rootStateClass;
     }
 }
