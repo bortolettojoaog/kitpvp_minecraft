@@ -33,11 +33,13 @@ public class PlayerInteract implements Listener {
 	private Item itemUtils;
 	private Message messageUtils;
 	private CustomPlayerInventory inventoryUtils;
+	private RootState rootState;
 	
 	public PlayerInteract() {
 		this.itemUtils = Main.getUtils().itemUtils();
 		this.messageUtils = Main.getUtils().messageUtils();
 		this.inventoryUtils = Main.getUtils().customPlayerInventoryUtils();
+		this.rootState = Main.getRootState();
 	}
 	
     @EventHandler
@@ -150,8 +152,8 @@ public class PlayerInteract implements Listener {
     	if (!((event.getDamager()) instanceof Player)) return;
     	Player damager = (Player) event.getDamager();
     	
-    	boolean isEntityFighting = RootState.players_mode.containsKey(entity.getUniqueId()) && RootState.players_mode.get(entity.getUniqueId()).equals(PlayerModeEnum.FIGHTING);
-    	boolean isDamagerFighting = RootState.players_mode.containsKey(damager.getUniqueId()) && RootState.players_mode.get(damager.getUniqueId()).equals(PlayerModeEnum.FIGHTING);
+    	boolean isEntityFighting = this.rootState.comparePlayerMode(entity, PlayerModeEnum.FIGHTING);
+    	boolean isDamagerFighting = this.rootState.comparePlayerMode(damager, PlayerModeEnum.FIGHTING);
     	
     	if (!isEntityFighting || !isDamagerFighting) {
     		event.setCancelled(true);
@@ -163,9 +165,11 @@ public class PlayerInteract implements Listener {
     public void onPlace(BlockPlaceEvent event) {
     	Player player = event.getPlayer();
     	
-    	boolean isPlayerFighting = RootState.players_mode.containsKey(player.getUniqueId()) && RootState.players_mode.get(player.getUniqueId()).equals(PlayerModeEnum.FIGHTING);
+    	boolean isPlayerFighting = this.rootState.comparePlayerMode(player, PlayerModeEnum.FIGHTING);
     	
-    	if ((player.isOp() || player.hasPermission(PlayerConstants.BUILD_PERMISSION)) && !isPlayerFighting) return;
+    	if ((player.isOp() || 
+    			player.hasPermission(PlayerConstants.BUILD_PERMISSION)) && 
+    				!isPlayerFighting) return;
     	
     	event.setCancelled(true);
     	return;
@@ -175,7 +179,11 @@ public class PlayerInteract implements Listener {
     public void onBreak(BlockBreakEvent event) {
     	Player player = event.getPlayer();
     	
-    	if (player.isOp() || player.hasPermission(PlayerConstants.BUILD_PERMISSION)) return;
+    	boolean isPlayerFighting = this.rootState.comparePlayerMode(player, PlayerModeEnum.FIGHTING);
+    	
+    	if ((player.isOp() || 
+    			player.hasPermission(PlayerConstants.BUILD_PERMISSION)) && 
+    				!isPlayerFighting) return;
     	
     	event.setCancelled(true);
     	return;
