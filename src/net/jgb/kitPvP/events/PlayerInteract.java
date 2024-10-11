@@ -2,8 +2,13 @@ package net.jgb.kitPvP.events;
 
 import net.jgb.kitPvP.Main;
 import net.jgb.kitPvP.constants.ItemConstants;
+import net.jgb.kitPvP.constants.PlayerConstants;
 import net.jgb.kitPvP.enums.ItemEnum;
+import net.jgb.kitPvP.enums.PlayerModeEnum;
+import net.jgb.kitPvP.state.RootState;
 import net.jgb.kitPvP.utils.CustomPlayerInventory;
+import net.jgb.kitPvP.utils.Item;
+import net.jgb.kitPvP.utils.Message;
 
 import java.util.Arrays;
 
@@ -11,44 +16,61 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class PlayerInteract implements Listener {
-
+	
+	private Item itemUtils;
+	private Message messageUtils;
+	private CustomPlayerInventory inventoryUtils;
+	
+	public PlayerInteract() {
+		this.itemUtils = Main.getUtils().itemUtils();
+		this.messageUtils = Main.getUtils().messageUtils();
+		this.inventoryUtils = Main.getUtils().customPlayerInventoryUtils();
+	}
+	
     @EventHandler
-    public void interact(PlayerInteractEvent event) {
+    public void onDrinkSoup(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         if (player.getItemInHand() == null) return;
 
-        if (player.getItemInHand().getType().equals(Material.MUSHROOM_SOUP)) {
+        if (this.itemUtils.checkHeldItem(player, Material.MUSHROOM_SOUP)) {
             if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 event.setCancelled(true);
 
-                double regeneration = 7;
+                double regeneration = PlayerConstants.SOUP_REGENETATION;
                 double health = player.getHealth();
                 double food = player.getFoodLevel();
 
-                if (health >= 20 && food >= 20) {
+                if (health >= PlayerConstants.MAX_LIFE_LEVEL && food >= PlayerConstants.MAX_FOOD_LEVEL)
                     return;
-                } else if (health >= 20 && food < 20) {
+                    
+                
+                if (health >= PlayerConstants.MAX_LIFE_LEVEL && food < PlayerConstants.MAX_FOOD_LEVEL) {
                     player.setFoodLevel(20);
                     player.setItemInHand(new ItemStack(Material.BOWL));
                     return;
                 }
 
-                if ((health + regeneration) >= 20) {
-                    player.setHealth(20);
-                } else {
-                    player.setHealth(health + regeneration);
-                }
+                double regeneration_result = (health + regeneration);
+                
+                player.setHealth(regeneration_result >= PlayerConstants.MAX_LIFE_LEVEL ? PlayerConstants.MAX_LIFE_LEVEL : regeneration_result);
 
                 player.setFoodLevel(20);
                 player.setItemInHand(new ItemStack(Material.BOWL));
+                
+                player.playSound(player.getLocation(), Sound.DRINK, 1.0F, 1.0F);
 
                 return;
             }
@@ -56,7 +78,7 @@ public class PlayerInteract implements Listener {
     }
 
     @EventHandler
-    public void drop(PlayerDropItemEvent event) {
+    public void onDrop(PlayerDropItemEvent event) {
         ItemStack item = event.getItemDrop().getItemStack();
         Material material = item.getType();
         boolean customItem = item.getItemMeta().getDisplayName() != null &&
@@ -65,7 +87,7 @@ public class PlayerInteract implements Listener {
                       .count() >= 1;
         
     	if (customItem) {
-    		event.getPlayer().sendMessage(Main.getMessage().getErrorPrefix() + " §cYou cannot drop this item!");
+    		event.getPlayer().sendMessage(this.messageUtils.getErrorPrefix() + " §cYou cannot drop this item!");
     		event.setCancelled(true);
     		return;
     	}
@@ -89,7 +111,7 @@ public class PlayerInteract implements Listener {
     }
 
     @EventHandler
-    public void pickup(PlayerPickupItemEvent event) {
+    public void onPickup(PlayerPickupItemEvent event) {
         ItemStack item = event.getItem().getItemStack();
         Material material = item.getType();
         boolean canPickup = Arrays.stream(ItemConstants.INTERACTIVE_ITEMS).filter(items -> material.name().contains(items)).count() >= 1;
@@ -99,20 +121,66 @@ public class PlayerInteract implements Listener {
     }
 
     @EventHandler
-    public void join(PlayerJoinEvent event) {
+    public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
         event.setJoinMessage(null);
-        player.sendMessage(Main.getMessage().getMessagePrefix() + " §7be very welcome, §f" + player.getName());
+        player.sendMessage(this.messageUtils.getMessagePrefix() + " §7be very welcome, §f" + player.getName());
         
-        CustomPlayerInventory.addJoinInventory(player);
+        this.inventoryUtils.addJoinInventory(player);
     }
 
     @EventHandler
-    public void quit(PlayerQuitEvent event) {
+    public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
 
         event.setQuitMessage(null);
-        player.sendMessage(Main.getMessage().getMessagePrefix() + " §7thanks for playing on our network!");
+        player.sendMessage(this.messageUtils.getMessagePrefix() + " §7thanks for playing on our network!");
+    }
+    
+    @EventHandler
+    public void onHit(EntityDamageByEntityEvent event) {
+    	if (!((event.getEntity()) instanceof Player)) { 
+    		event.setCancelled(true);
+    		return;
+    	}
+    	
+    	Player entity = (Player) event.getEntity();
+    	
+    	if (!((event.getDamager()) instanceof Player)) return;
+    	Player damager = (Player) event.getDamager();
+    	
+    	boolean entityIsFighting = RootState.players_mode.containsKey(entity.getUniqueId()) && RootState.players_mode.get(entity.getUniqueId()).equals(PlayerModeEnum.FIGHTING);
+    	boolean damagerIsFighting = RootState.players_mode.containsKey(damager.getUniqueId()) && RootState.players_mode.get(damager.getUniqueId()).equals(PlayerModeEnum.FIGHTING);
+    	
+    	if (!entityIsFighting || !damagerIsFighting) {
+    		event.setCancelled(true);
+    		return;
+    	}
+    }
+    
+    @EventHandler
+    public void onPlace(BlockPlaceEvent event) {
+    	Player player = event.getPlayer();
+    	
+    	if (player.isOp() || player.hasPermission(PlayerConstants.BUILD_PERMISSION)) return;
+    	
+    	event.setCancelled(true);
+    	return;
+    }
+    
+    @EventHandler
+    public void onBreak(BlockBreakEvent event) {
+    	Player player = event.getPlayer();
+    	
+    	if (player.isOp() || player.hasPermission(PlayerConstants.BUILD_PERMISSION)) return;
+    	
+    	event.setCancelled(true);
+    	return;
+    }
+    
+    @EventHandler
+    public void onWeather(WeatherChangeEvent event) {
+    	if (event.toWeatherState()) event.setCancelled(true);
     }
 }
