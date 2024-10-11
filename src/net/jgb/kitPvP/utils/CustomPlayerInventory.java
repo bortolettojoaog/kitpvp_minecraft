@@ -7,14 +7,19 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import net.jgb.kitPvP.Main;
 import net.jgb.kitPvP.enums.ItemEnum;
+import net.jgb.kitPvP.enums.PlayerModeEnum;
+import net.jgb.kitPvP.state.RootState;
 
 public class CustomPlayerInventory {
 
 	private CustomRecipe customRecipe;
+	private RootState rootState;
 	
 	public CustomPlayerInventory(CustomRecipe customRecipe) {
 		this.customRecipe = customRecipe;
+		this.rootState = Main.getRootState();
 	}
 	
 	public void cleanPlayerInventory(Player player) {
@@ -42,6 +47,9 @@ public class CustomPlayerInventory {
         player.getInventory().setItem(0, emerald);
 		player.getInventory().setItem(4, chest);
 		player.getInventory().setItem(8, sword);
+		
+		if (this.rootState != null)
+			this.rootState.updatePlayerMode(player, PlayerModeEnum.HOLDING);
 		
 		player.updateInventory();
 	}
