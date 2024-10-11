@@ -33,6 +33,15 @@ public class CustomRecipe {
 
         Bukkit.addRecipe(recipe);
     }
+	
+    public ItemStack createItem(Material material, int amount, String displayName) {
+    	ItemStack itemStack = new ItemStack(material, amount);
+    	ItemMeta itemMeta = itemStack.getItemMeta();
+    	itemMeta.setDisplayName(displayName);
+    	itemStack.setItemMeta(itemMeta);
+    	
+    	return itemStack;
+    }
     
     public ItemStack createItem(Material material, int amount, String displayName, List<String> lore) {
     	ItemStack itemStack = new ItemStack(material, amount);
