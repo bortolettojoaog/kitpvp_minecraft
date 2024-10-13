@@ -6,7 +6,9 @@ public enum ItemEnum {
 	
 	BOX("Roleta da Sorte", Material.EMERALD),
 	KIT("Menu", Material.CHEST),
-	TRAIN("Treinamento", Material.DIAMOND_SWORD);
+	TRAIN("Treinamento", Material.DIAMOND_SWORD),
+	NEXT_PAGE("Próxima Página", Material.ARROW),
+	PREVIOUS_PAGE("Página Anterior", Material.ARROW);
 	
 	String displayName;
 	Material material;
