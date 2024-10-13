@@ -17,8 +17,8 @@ public class Main extends JavaPlugin {
     @Override
     public void onLoad() {
         setPlugin(this);
-        setUtils(new Utils());
         setRootState(new RootState());
+        setUtils(new Utils());
 
         Bukkit.getConsoleSender().sendMessage(utils.messageUtils().getInformationPrefix() +  " §7plugin loading...");
     }
