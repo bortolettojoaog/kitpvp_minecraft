@@ -9,6 +9,7 @@ import net.jgb.kitPvP.state.RootState;
 import net.jgb.kitPvP.utils.CustomInventory;
 import net.jgb.kitPvP.utils.CustomPlayerInventory;
 import net.jgb.kitPvP.utils.Item;
+import net.jgb.kitPvP.utils.Jumpers;
 import net.jgb.kitPvP.utils.Message;
 
 import java.util.Arrays;
@@ -19,6 +20,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,15 +29,18 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 public class PlayerInteract implements Listener {
 	
 	private Item itemUtils;
 	private Message messageUtils;
+	private Jumpers jumperUtils;
 	private CustomPlayerInventory inventoryUtils;
 	private RootState rootState;
 	
@@ -42,6 +48,7 @@ public class PlayerInteract implements Listener {
 		this.itemUtils = Main.getUtils().itemUtils();
 		this.messageUtils = Main.getUtils().messageUtils();
 		this.inventoryUtils = Main.getUtils().customPlayerInventoryUtils();
+		this.jumperUtils = Main.getUtils().jumperUtils();
 		this.rootState = Main.getRootState();
 	}
 	
@@ -235,5 +242,69 @@ public class PlayerInteract implements Listener {
             customInventory.get().nextPage();
         } else if (ChatColor.stripColor(displayName).equals(ItemEnum.PREVIOUS_PAGE.getDisplayName()))
         	customInventory.get().previousPage();
+    }
+    
+    @EventHandler
+    public void onMove(PlayerMoveEvent event) {
+    	Player player = event.getPlayer();
+    	
+    	Block block = event.getTo().getBlock();
+    	
+    	if (block.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getType().equals(Material.BEACON)) {
+    		if (block.getRelative(BlockFace.DOWN).getType().equals(Material.EMERALD_BLOCK)) {
+    			this.rootState.removePlayerJumping(player.getUniqueId());
+    			player.setVelocity(player.getLocation().getDirection().multiply(6.0D));
+    			player.setVelocity(new Vector(player.getVelocity().getX(), 1.5D, player.getVelocity().getZ()));
+    			player.playSound(player.getLocation(), Sound.FIREWORK_LAUNCH, 1.0F, 1.0F);
+    		    this.rootState.addPlayerJumping(player.getUniqueId());
+    		} else if (block.getRelative(BlockFace.DOWN).getType().equals(Material.REDSTONE_BLOCK)) {
+    			this.rootState.removePlayerJumping(player.getUniqueId());
+    			player.setVelocity(player.getLocation().getDirection().multiply(6.0D));
+    			player.setVelocity(new Vector(player.getVelocity().getX(), 3.0D, player.getVelocity().getZ()));
+    			player.playSound(player.getLocation(), Sound.FIREWORK_LAUNCH, 1.0F, 1.0F);
+    		    this.rootState.addPlayerJumping(player.getUniqueId());
+    		}
+    	}
+    	
+    	if (block.getRelative(BlockFace.DOWN).getType().equals(Material.SPONGE)) {
+    		boolean foundBeacon = false;
+    		int spongeCountAbove = 0;
+
+    		while (block.getY() > PlayerConstants.MINIMUM_Y_MAP) {
+    		    if (block.getType().equals(Material.BEACON)) {
+    		        foundBeacon = true;
+    		        break;
+    		    }
+    		    block = block.getRelative(BlockFace.DOWN);
+    		}
+    		
+    		if (foundBeacon) {
+    		    Block aboveBlock = block.getRelative(BlockFace.UP);
+    		    
+    		    while (aboveBlock.getType().equals(Material.SPONGE)) {
+    		        spongeCountAbove++;
+    		        aboveBlock = aboveBlock.getRelative(BlockFace.UP);
+    		    }
+    		    
+    		    this.rootState.removePlayerJumping(player.getUniqueId());
+    		    Block adjacents = event.getTo().getBlock().getRelative(BlockFace.DOWN);
+    		    this.jumperUtils.addVectorBasedOnAdjacentBlocks(adjacents, player);
+    			player.setVelocity(player.getVelocity().setY(spongeCountAbove * 1.2D));
+    			player.playSound(player.getLocation(), Sound.SLIME_WALK2, 1.0F, 1.0F);
+    		    this.rootState.addPlayerJumping(player.getUniqueId());
+    		}
+    	}
+    }
+    
+    @EventHandler
+    public void onFall(EntityDamageEvent event) {
+    	if ((event.getEntity() instanceof Player)) {
+    		Player player = (Player) event.getEntity();
+    		if ((event.getCause().equals(EntityDamageEvent.DamageCause.FALL)) 
+    				&& (this.rootState.getPlayersJumping().contains(player.getUniqueId()))) {
+    			event.setCancelled(true);
+    			this.rootState.removePlayerJumping(player.getUniqueId());
+    		}
+    	}
     }
 }
