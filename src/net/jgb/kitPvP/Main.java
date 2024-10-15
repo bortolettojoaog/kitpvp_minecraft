@@ -1,5 +1,6 @@
 package net.jgb.kitPvP;
 
+import net.jgb.kitPvP.configs.Configs;
 import net.jgb.kitPvP.events.Listeners;
 import net.jgb.kitPvP.state.RootState;
 import net.jgb.kitPvP.utils.Utils;
@@ -13,12 +14,14 @@ public class Main extends JavaPlugin {
     private static Main currentPlugin;
     private static Utils utils;
     private static RootState rootState;
+    private static Configs configs;
 
     @Override
     public void onLoad() {
         setPlugin(this);
         setRootState(new RootState());
         setUtils(new Utils());
+        setConfigs(new Configs("warps"));
 
         Bukkit.getConsoleSender().sendMessage(utils.messageUtils().getInformationPrefix() +  " §7plugin loading...");
     }
@@ -38,6 +41,8 @@ public class Main extends JavaPlugin {
         
         getRootState().clean();
         setRootState(null);
+        
+        setConfigs(null);
     }
 
     public void init() {
@@ -71,5 +76,13 @@ public class Main extends JavaPlugin {
     
     private void setRootState(RootState rootStateClass) {
     	rootState = rootStateClass;
+    }
+    
+    public static Configs getConfigs() {
+    	return configs;
+    }
+    
+    private void setConfigs(Configs configList) {
+    	configs = configList;
     }
 }
