@@ -2,12 +2,16 @@ package net.jgb.kitPvP.utils;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import net.jgb.kitPvP.Main;
+import net.jgb.kitPvP.constants.InventoryConstants;
 import net.jgb.kitPvP.enums.ItemEnum;
 import net.jgb.kitPvP.enums.PlayerModeEnum;
 import net.jgb.kitPvP.state.RootState;
@@ -52,5 +56,44 @@ public class CustomPlayerInventory {
 			this.rootState.updatePlayerMode(player, PlayerModeEnum.HOLDING);
 		
 		player.updateInventory();
+	}
+	
+	public void openMenuInventory(Player player) {	
+		if (this.rootState == null) return;
+		
+		CustomInventory inventory = InventoryConstants.MENU_INVENTORY;
+		
+		Optional<CustomInventory> customInventory = this.rootState.getInventories().stream().filter(inv -> inv.equals(inventory)).findFirst();
+		
+		if (customInventory.isPresent()) {
+			customInventory.get().openInventory(player);
+			return;
+		}
+		
+		this.rootState.addInventory(inventory);
+		
+		List<Integer> slots = InventoryConstants.MIDDLE_INVENTORY;
+		
+		inventory.setSlots(slots);
+		
+		for (int i = 1; i < 60; i++) {
+			
+			ItemStack item = Main.getUtils().customRecipeUtils().createItem(Material.STONE, 1, "§c§l" + i);
+			inventory.addItem(item);
+		}
+		
+		HashMap<Integer, ItemStack> navigation = new HashMap<Integer, ItemStack>();
+		
+		ItemStack next = this.customRecipe.createItem(ItemEnum.NEXT_PAGE.getMaterial(), 1, "§a" + ItemEnum.NEXT_PAGE.getDisplayName(), 
+				Arrays.asList("", "§7§o- Página atual: §r{page}"));
+		ItemStack previous = this.customRecipe.createItem(ItemEnum.PREVIOUS_PAGE.getMaterial(), 1, "§c" + ItemEnum.PREVIOUS_PAGE.getDisplayName(),
+				Arrays.asList("", "§7§o- Página atual: §r{page}"));
+		
+		navigation.put(48, next);
+		navigation.put(50, previous);
+		
+		inventory.setUnusableSlots(navigation);
+		
+		inventory.openInventory(player);
 	}
 }
