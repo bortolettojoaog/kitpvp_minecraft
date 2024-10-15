@@ -6,11 +6,13 @@ import net.jgb.kitPvP.constants.PlayerConstants;
 import net.jgb.kitPvP.enums.ItemEnum;
 import net.jgb.kitPvP.enums.PlayerModeEnum;
 import net.jgb.kitPvP.state.RootState;
+import net.jgb.kitPvP.utils.CustomInventory;
 import net.jgb.kitPvP.utils.CustomPlayerInventory;
 import net.jgb.kitPvP.utils.Item;
 import net.jgb.kitPvP.utils.Message;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -24,6 +26,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
@@ -192,5 +195,29 @@ public class PlayerInteract implements Listener {
     @EventHandler
     public void onWeather(WeatherChangeEvent event) {
     	if (event.toWeatherState()) event.setCancelled(true);
+    }
+    
+    @EventHandler
+    public void onInventoryInteract(InventoryClickEvent event) {   
+    	if (this.rootState == null) return;
+    	
+        Optional<CustomInventory> customInventory = this.rootState.getInventories().stream()
+        		.filter(inventory -> inventory.getInventory().getTitle().equals(event.getInventory().getTitle())).findFirst();
+
+        if (!customInventory.isPresent()) return;
+        
+        ItemStack item = event.getCurrentItem();
+
+        if (item == null || !item.hasItemMeta()) return;
+        
+        String displayName = item.getItemMeta().getDisplayName();
+        if (displayName == null) return;
+        
+        event.setCancelled(true);
+
+        if (ChatColor.stripColor(displayName).equals(ItemEnum.NEXT_PAGE.getDisplayName())) {
+            customInventory.get().nextPage();
+        } else if (ChatColor.stripColor(displayName).equals(ItemEnum.PREVIOUS_PAGE.getDisplayName()))
+        	customInventory.get().previousPage();
     }
 }
