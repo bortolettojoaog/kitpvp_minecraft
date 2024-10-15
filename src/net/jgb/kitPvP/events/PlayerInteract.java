@@ -81,6 +81,22 @@ public class PlayerInteract implements Listener {
             }
         }
     }
+    
+    @EventHandler
+    public void onOpenMenu(PlayerInteractEvent event) {
+    	Player player = event.getPlayer();
+    	
+    	if (player.getItemInHand() == null) return;
+    	
+    	if (!this.itemUtils.checkHeldItem(player, ItemEnum.KIT.getMaterial())) return;
+    	
+    	if (!ChatColor.stripColor(event.getItem().getItemMeta().getDisplayName()).equals(ItemEnum.KIT.getDisplayName())) return;
+    	
+    	if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+    		event.setCancelled(true);
+    		this.inventoryUtils.openMenuInventory(player);
+    	}
+    }
 
     @EventHandler
     public void onDrop(PlayerDropItemEvent event) {
