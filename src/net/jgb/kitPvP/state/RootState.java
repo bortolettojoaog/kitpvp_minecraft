@@ -8,21 +8,28 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 
 import net.jgb.kitPvP.enums.PlayerModeEnum;
+import net.jgb.kitPvP.utils.CustomConfig;
 import net.jgb.kitPvP.utils.CustomInventory;
 
 public class RootState {
 	
 	private HashMap<UUID, PlayerModeEnum> players_mode;
 	private List<CustomInventory> inventories;
+	private List<UUID> players_jumping;
+	private HashMap<String, CustomConfig> configs;
 	
 	public RootState() {
 		this.players_mode = new HashMap<>();
 		this.inventories = new ArrayList<>();
+		this.players_jumping = new ArrayList<>();
+		this.configs = new HashMap<>();
 	}
 
 	public void clean() {
 		this.players_mode.clear();
 		this.inventories.clear();
+		this.players_jumping.clear();
+		this.configs.clear();
 	}
 	
 	public boolean comparePlayerMode(Player player, PlayerModeEnum playerMode) {
@@ -58,5 +65,33 @@ public class RootState {
 	
 	public List<CustomInventory> getInventories() {
 		return this.inventories;
+	}
+	
+	public void setPlayerJumping(List<UUID> players_jumping) {
+		this.players_jumping = players_jumping;
+	}
+	
+	public void addPlayerJumping(UUID playerUUID) {
+		this.players_jumping.add(playerUUID);
+	}
+	
+	public void removePlayerJumping(UUID playerUUID) {
+		this.players_jumping.remove(playerUUID);
+	}
+	
+	public List<UUID> getPlayersJumping() {
+		return this.players_jumping;
+	}
+	
+	public void addConfig(String name, CustomConfig config) {
+		this.configs.put(name, config);
+	}
+	
+	public void removeConfig(String name) {
+		this.configs.remove(name);
+	}
+	
+	public HashMap<String, CustomConfig> getConfigs() {
+		return this.configs;
 	}
 }
