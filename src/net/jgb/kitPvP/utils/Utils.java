@@ -6,12 +6,14 @@ public class Utils {
 	private CustomRecipe customRecipes;
 	private Item itemUtils;
 	private Message message;
+	private Jumpers jumpers;
 	
 	public Utils() {
 		this.customRecipes = new CustomRecipe();
 		this.customPlayerInventory = new CustomPlayerInventory(this.customRecipes);
 		this.itemUtils = new Item();
 		this.message = new Message();
+		this.jumpers = new Jumpers();
 	}
 	
 	public CustomPlayerInventory customPlayerInventoryUtils() {
@@ -28,5 +30,9 @@ public class Utils {
 	
 	public Message messageUtils() {
 		return this.message;
+	}
+	
+	public Jumpers jumperUtils() {
+		return this.jumpers;
 	}
 }
