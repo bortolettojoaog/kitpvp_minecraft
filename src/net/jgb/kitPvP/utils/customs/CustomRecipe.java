@@ -1,4 +1,4 @@
-package net.jgb.kitPvP.utils;
+package net.jgb.kitPvP.utils.customs;
 
 import java.util.List;
 import java.util.Map;
