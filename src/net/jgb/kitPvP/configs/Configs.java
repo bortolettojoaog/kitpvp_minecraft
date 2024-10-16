@@ -1,18 +1,20 @@
 package net.jgb.kitPvP.configs;
 
+import net.jgb.kitPvP.configs.warp.warpsConfig;
+
 public class Configs {
 	
-	private warpsConfig itemConfig;
+	private warpsConfig warpConfig;
 	
-	public Configs(String itemConfigName) {
-		this.setItemConfig(new warpsConfig(itemConfigName));
+	public Configs(String warpConfigName) {
+		this.setWarpConfig(new warpsConfig(warpConfigName));
 	}
 
-	public warpsConfig getItemConfig() {
-		return itemConfig;
+	public warpsConfig getWarpConfig() {
+		return warpConfig;
 	}
 
-	public void setItemConfig(warpsConfig itemConfig) {
-		this.itemConfig = itemConfig;
+	public void setWarpConfig(warpsConfig warpConfig) {
+		this.warpConfig = warpConfig;
 	}
 }
