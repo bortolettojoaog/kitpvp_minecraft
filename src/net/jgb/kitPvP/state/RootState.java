@@ -8,8 +8,8 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 
 import net.jgb.kitPvP.enums.PlayerModeEnum;
-import net.jgb.kitPvP.utils.CustomConfig;
-import net.jgb.kitPvP.utils.CustomInventory;
+import net.jgb.kitPvP.utils.customs.CustomConfig;
+import net.jgb.kitPvP.utils.customs.CustomInventory;
 
 public class RootState {
 	
