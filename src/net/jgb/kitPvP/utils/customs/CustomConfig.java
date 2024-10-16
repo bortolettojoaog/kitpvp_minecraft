@@ -1,4 +1,4 @@
-package net.jgb.kitPvP.utils;
+package net.jgb.kitPvP.utils.customs;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
