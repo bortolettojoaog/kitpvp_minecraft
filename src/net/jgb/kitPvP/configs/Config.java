@@ -1,8 +1,10 @@
 package net.jgb.kitPvP.configs;
 
-import net.jgb.kitPvP.utils.CustomConfig;
+import org.bukkit.configuration.ConfigurationSection;
 
-abstract class Config {
+import net.jgb.kitPvP.utils.customs.CustomConfig;
+
+public abstract class Config {
 	
 	private CustomConfig config;
 	
@@ -29,4 +31,34 @@ abstract class Config {
 	public void setConfig(CustomConfig config) {
 		this.config = config;
 	}
+	
+    public Object get(String path) {
+        return this.config.getFile().get(path);
+    }
+
+    public ConfigurationSection getConfigurationSection(String path) {
+        return this.config.getFile().getConfigurationSection(path);
+    }
+
+    public void add(String path, Object object) {
+    	this.config.getFile().set(path, object);
+
+    	saveConfig();
+    }
+
+    public void remove(String path) {
+    	this.config.getFile().set(path, null);
+
+    	saveConfig();
+    }
+
+    public boolean contains(String path) {
+        return this.config.getFile().contains(path);
+    }
+
+    public void createSection(String path) {
+    	this.config.getFile().createSection(path);
+
+    	saveConfig();
+    }
 }
