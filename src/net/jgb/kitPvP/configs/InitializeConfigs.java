@@ -2,11 +2,11 @@ package net.jgb.kitPvP.configs;
 
 import net.jgb.kitPvP.configs.warp.warpsConfig;
 
-public class Configs {
+public class InitializeConfigs {
 	
 	private warpsConfig warpConfig;
 	
-	public Configs(String warpConfigName) {
+	public InitializeConfigs(String warpConfigName) {
 		this.setWarpConfig(new warpsConfig(warpConfigName));
 	}
 
