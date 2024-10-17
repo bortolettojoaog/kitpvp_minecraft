@@ -1,5 +1,8 @@
 package net.jgb.kitPvP.utils;
 
+import net.jgb.kitPvP.utils.customs.CustomPlayerInventory;
+import net.jgb.kitPvP.utils.customs.CustomRecipe;
+
 public class Utils {
 	
 	private CustomPlayerInventory customPlayerInventory;
@@ -7,6 +10,7 @@ public class Utils {
 	private Item itemUtils;
 	private Message message;
 	private Jumpers jumpers;
+	private Environment environment;
 	
 	public Utils() {
 		this.customRecipes = new CustomRecipe();
@@ -14,6 +18,7 @@ public class Utils {
 		this.itemUtils = new Item();
 		this.message = new Message();
 		this.jumpers = new Jumpers();
+		this.environment = new Environment();
 	}
 	
 	public CustomPlayerInventory customPlayerInventoryUtils() {
@@ -34,5 +39,9 @@ public class Utils {
 	
 	public Jumpers jumperUtils() {
 		return this.jumpers;
+	}
+	
+	public Environment environmentUtils() {
+		return this.environment;
 	}
 }
