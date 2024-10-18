@@ -1,6 +1,7 @@
 package net.jgb.kitPvP;
 
-import net.jgb.kitPvP.configs.Configs;
+import net.jgb.kitPvP.commands.Commands;
+import net.jgb.kitPvP.configs.InitializeConfigs;
 import net.jgb.kitPvP.events.Listeners;
 import net.jgb.kitPvP.state.RootState;
 import net.jgb.kitPvP.utils.Utils;
@@ -14,14 +15,14 @@ public class Main extends JavaPlugin {
     private static Main currentPlugin;
     private static Utils utils;
     private static RootState rootState;
-    private static Configs configs;
+    private static InitializeConfigs configs;
 
     @Override
     public void onLoad() {
         setPlugin(this);
         setRootState(new RootState());
         setUtils(new Utils());
-        setConfigs(new Configs("warps"));
+        setConfigs(new InitializeConfigs("warps"));
 
         Bukkit.getConsoleSender().sendMessage(utils.messageUtils().getInformationPrefix() +  " §7plugin loading...");
     }
@@ -47,6 +48,7 @@ public class Main extends JavaPlugin {
 
     public void init() {
         new Listeners();
+        new Commands();
 
         utils.customRecipeUtils().soupRecipe(Material.RED_MUSHROOM, Material.BROWN_MUSHROOM, Material.BOWL);
         utils.customRecipeUtils().soupRecipe(Material.CACTUS, Material.CACTUS, Material.BOWL);
@@ -78,11 +80,11 @@ public class Main extends JavaPlugin {
     	rootState = rootStateClass;
     }
     
-    public static Configs getConfigs() {
+    public static InitializeConfigs getConfigs() {
     	return configs;
     }
     
-    private void setConfigs(Configs configList) {
+    private void setConfigs(InitializeConfigs configList) {
     	configs = configList;
     }
 }
