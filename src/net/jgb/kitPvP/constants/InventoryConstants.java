@@ -3,7 +3,7 @@ package net.jgb.kitPvP.constants;
 import java.util.Arrays;
 import java.util.List;
 
-import net.jgb.kitPvP.utils.CustomInventory;
+import net.jgb.kitPvP.utils.customs.CustomInventory;
 
 public class InventoryConstants {
 	
