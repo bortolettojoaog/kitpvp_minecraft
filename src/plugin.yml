@@ -3,3 +3,5 @@ author: JGB
 main: net.jgb.kitPvP.Main
 version: 0.0.1
 commands:
+  warp:
+    description: Comando para criacao, delecao e configuracao de warps.
