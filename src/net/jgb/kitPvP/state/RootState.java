@@ -9,12 +9,12 @@ import org.bukkit.entity.Player;
 
 import net.jgb.kitPvP.enums.PlayerModeEnum;
 import net.jgb.kitPvP.utils.customs.CustomConfig;
-import net.jgb.kitPvP.utils.customs.CustomInventory;
+import net.jgb.kitPvP.utils.customs.CustomPaginatedInventory;
 
 public class RootState {
 	
 	private HashMap<UUID, PlayerModeEnum> players_mode;
-	private List<CustomInventory> inventories;
+	private List<CustomPaginatedInventory> inventories;
 	private List<UUID> players_jumping;
 	private HashMap<String, CustomConfig> configs;
 	
@@ -51,19 +51,19 @@ public class RootState {
 		return this.players_mode.get(player.getUniqueId());
 	}
 	
-	public void setInventorys(List<CustomInventory> inventories) {
+	public void setInventorys(List<CustomPaginatedInventory> inventories) {
 		this.inventories = inventories;
 	}
 	
-	public void addInventory(CustomInventory inventory) {
+	public void addInventory(CustomPaginatedInventory inventory) {
 		this.inventories.add(inventory);
 	}
 	
-	public void removeInventory(CustomInventory inventory) {
+	public void removeInventory(CustomPaginatedInventory inventory) {
 		this.inventories.removeIf(inv -> inv.equals(inventory));
 	}
 	
-	public List<CustomInventory> getInventories() {
+	public List<CustomPaginatedInventory> getInventories() {
 		return this.inventories;
 	}
 	
