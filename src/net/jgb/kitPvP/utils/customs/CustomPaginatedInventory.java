@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-public class CustomInventory {
+public class CustomPaginatedInventory {
 
     private Inventory inventory;
     private int pageSize;
@@ -22,7 +22,7 @@ public class CustomInventory {
     private List<Integer> slots;
     private HashMap<Integer, ItemStack> unusableSlots;
     
-    public CustomInventory(String title, int size) {
+    public CustomPaginatedInventory(String title, int size) {
         this.inventory = Bukkit.createInventory(null, size, title);
         this.pageSize = size;
         this.currentPage = 0;
@@ -31,7 +31,7 @@ public class CustomInventory {
         this.unusableSlots = new HashMap<>();
     }
 
-    public CustomInventory(String title, InventoryType type) {
+    public CustomPaginatedInventory(String title, InventoryType type) {
         this.inventory = Bukkit.createInventory(null, type, title);
         this.pageSize = type.getDefaultSize();
         this.currentPage = 0;
