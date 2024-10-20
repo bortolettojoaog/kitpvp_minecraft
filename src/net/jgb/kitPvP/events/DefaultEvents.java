@@ -6,11 +6,11 @@ import net.jgb.kitPvP.constants.PlayerConstants;
 import net.jgb.kitPvP.enums.ItemEnum;
 import net.jgb.kitPvP.enums.PlayerModeEnum;
 import net.jgb.kitPvP.state.RootState;
-import net.jgb.kitPvP.utils.CustomInventory;
-import net.jgb.kitPvP.utils.CustomPlayerInventory;
 import net.jgb.kitPvP.utils.Item;
 import net.jgb.kitPvP.utils.Jumpers;
 import net.jgb.kitPvP.utils.Message;
+import net.jgb.kitPvP.utils.customs.CustomPaginatedInventory;
+import net.jgb.kitPvP.utils.customs.CustomPlayerInventory;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -31,12 +31,13 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-public class PlayerInteract implements Listener {
+public class DefaultEvents implements Listener {
 	
 	private Item itemUtils;
 	private Message messageUtils;
@@ -44,7 +45,7 @@ public class PlayerInteract implements Listener {
 	private CustomPlayerInventory inventoryUtils;
 	private RootState rootState;
 	
-	public PlayerInteract() {
+	public DefaultEvents() {
 		this.itemUtils = Main.getUtils().itemUtils();
 		this.messageUtils = Main.getUtils().messageUtils();
 		this.inventoryUtils = Main.getUtils().customPlayerInventoryUtils();
@@ -153,7 +154,7 @@ public class PlayerInteract implements Listener {
         Player player = event.getPlayer();
 
         event.setJoinMessage(null);
-        player.sendMessage(this.messageUtils.getMessagePrefix() + " §7be very welcome, §f" + player.getName());
+        player.sendMessage(this.messageUtils.getMessagePrefix() + " §7Be very welcome, §f" + player.getName());
         
         this.inventoryUtils.addJoinInventory(player);
     }
@@ -163,7 +164,7 @@ public class PlayerInteract implements Listener {
         Player player = event.getPlayer();
 
         event.setQuitMessage(null);
-        player.sendMessage(this.messageUtils.getMessagePrefix() + " §7thanks for playing on our network!");
+        player.sendMessage(this.messageUtils.getMessagePrefix() + " §7Thanks for playing on our network!");
     }
     
     @EventHandler
@@ -222,12 +223,14 @@ public class PlayerInteract implements Listener {
     
     @EventHandler
     public void onInventoryInteract(InventoryClickEvent event) {   
-    	if (this.rootState == null) return;
+    	if (this.rootState == null || event.getInventory().getTitle() == null) return;
     	
-        Optional<CustomInventory> customInventory = this.rootState.getInventories().stream()
+        Optional<CustomPaginatedInventory> customInventory = this.rootState.getInventories().stream()
         		.filter(inventory -> inventory.getInventory().getTitle().equals(event.getInventory().getTitle())).findFirst();
 
         if (!customInventory.isPresent()) return;
+        
+        event.setCancelled(true);
         
         ItemStack item = event.getCurrentItem();
 
@@ -235,14 +238,26 @@ public class PlayerInteract implements Listener {
         
         String displayName = item.getItemMeta().getDisplayName();
         if (displayName == null) return;
-        
-        event.setCancelled(true);
 
         if (ChatColor.stripColor(displayName).equals(ItemEnum.NEXT_PAGE.getDisplayName())) {
             customInventory.get().nextPage();
         } else if (ChatColor.stripColor(displayName).equals(ItemEnum.PREVIOUS_PAGE.getDisplayName()))
         	customInventory.get().previousPage();
     }
+    
+    @EventHandler
+    public void onInventoryDrag(InventoryDragEvent event) {
+        if (this.rootState == null) return;
+
+        Optional<CustomPaginatedInventory> customInventory = this.rootState.getInventories().stream()
+            .filter(inventory -> inventory.getInventory().getTitle().equals(event.getInventory().getTitle()))
+            .findFirst();
+
+        if (customInventory.isPresent()) {
+            event.setCancelled(true);
+        }
+    }
+
     
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
