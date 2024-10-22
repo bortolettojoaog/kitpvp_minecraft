@@ -1,35 +1,35 @@
 package net.jgb.kitPvP.commands;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import net.jgb.kitPvP.Main;
 import net.jgb.kitPvP.constants.PlayerConstants;
 import net.jgb.kitPvP.entities.WarpEntity;
-import net.jgb.kitPvP.enums.WarpStateEnum;
 import net.jgb.kitPvP.enums.WorldEnum;
 import net.jgb.kitPvP.utils.Environment;
 import net.jgb.kitPvP.utils.Message;
+import net.jgb.kitPvP.utils.languages.Language;
 
 public class WarpCommand implements CommandExecutor {
 
 	private Message messageUtils;
 	private Environment environmentUtils;
+	private Language language;
 	
 	public WarpCommand() {
 		this.messageUtils = Main.getUtils().messageUtils();
 		this.environmentUtils = Main.getUtils().environmentUtils();
+		this.language = Main.getLanguage();
 	}
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String cmd, String[] args) {
 		if (!(sender instanceof Player)) {
-			Bukkit.getConsoleSender().sendMessage(this.messageUtils.getErrorPrefix() + " §cOnly players can execute §rwarp §ccommand!");
+			Bukkit.getConsoleSender().sendMessage(this.language.ONLY_PLAYERS_CAN_RUN_COMMAND.replace("{command}", "warp"));
 			return false;
 		}
 		
@@ -50,14 +50,15 @@ public class WarpCommand implements CommandExecutor {
 					player.sendMessage("§7» /warp §e<warp name>");
 					return false;
 				} else {
-					WarpEntity warp = Main.getConfigs().getWarpConfig().getWarpByName(args[0], this.environmentUtils.checkPlayerWorld(player));
+					WarpEntity warp = Main.getConfigs().getWarpConfig()
+							.getWarpByName(args[0], this.environmentUtils.checkPlayerWorld(player));
 					
 					if (warp == null) {
 						checkSubCommand(player, args[0]);
 						return false;
 					}
 					
-					player.sendMessage(this.messageUtils.getSucessPrefix() + " §aTeleported to §r{warp}§a warp!".replace("{warp}", args[0]));
+					player.sendMessage(this.language.TELEPORTED_TO_WARP.replace("{warp}", args[0]));
 					
 					player.teleport(Main.getConfigs().getWarpConfig().getWarpLocation(warp));
 					return true;
@@ -80,7 +81,6 @@ public class WarpCommand implements CommandExecutor {
 		return false;
 	}
 	
-	@SuppressWarnings("deprecation")
 	private boolean checkSubSubCommand(Player player, String subCommand, String warpName) {
 		WorldEnum playerWorld = this.environmentUtils.checkPlayerWorld(player);
 		WarpEntity warp = Main.getConfigs().getWarpConfig().getWarpByName(warpName, playerWorld);
@@ -88,52 +88,42 @@ public class WarpCommand implements CommandExecutor {
 		switch(subCommand.toLowerCase()) {
 		case "set":
 			if (!player.hasPermission(PlayerConstants.SET_WARP_PERMISSION)) {
-				player.sendMessage(this.messageUtils.getErrorPrefix() + " §cYou don't have permission!");
+				player.sendMessage(this.language.NO_PERMISSION);
 				return false;
 			}
 			
 			if (warp != null) {
-				player.sendMessage(this.messageUtils.getErrorPrefix() + " §cThe warp '§r" + warpName + "§c' already exist!");
+				player.sendMessage(this.language.WARP_ALREADY_EXIST.replace("{warp}", warpName));
 				return false;
 			}
 			
-			player.sendMessage(this.messageUtils.getSucessPrefix() + " §aWarp §r{warp} §awas defined!".replace("{warp}", warpName));
+			Main.getConfigs().getWarpConfig().createWarp(warpName, playerWorld, player.getLocation());
 			
-			ItemStack icon = new ItemStack(Material.REDSTONE_BLOCK);
-			
-			Main.getConfigs().getWarpConfig().createSection("Warps." + this.environmentUtils.checkPlayerWorld(player) + "." + warpName);
-			Main.getConfigs().getWarpConfig().add("Warps." + playerWorld + "." + warpName + ".world", player.getWorld().getName());
-			Main.getConfigs().getWarpConfig().add("Warps." + playerWorld + "." + warpName + ".x", player.getLocation().getX());
-			Main.getConfigs().getWarpConfig().add("Warps." + playerWorld + "." + warpName + ".y", player.getLocation().getY());
-			Main.getConfigs().getWarpConfig().add("Warps." + playerWorld + "." + warpName + ".z", player.getLocation().getZ());
-			Main.getConfigs().getWarpConfig().add("Warps." + playerWorld + "." + warpName + ".pitch", player.getLocation().getPitch());
-			Main.getConfigs().getWarpConfig().add("Warps." + playerWorld + "." + warpName + ".yaw", player.getLocation().getYaw());
-			Main.getConfigs().getWarpConfig().add("Warps." + playerWorld + "." + warpName + ".icon", icon.getType() + ":" + icon.getDurability() + ":" + icon.getData().getData());
-			Main.getConfigs().getWarpConfig().add("Warps." + playerWorld + "." + warpName + ".state", WarpStateEnum.PUBLIC.getDisplayName());
+			player.sendMessage(this.language.WARP_CREATED.replace("{warp}", warpName));
 			return true;
 		case "unset":
 			if (!player.hasPermission(PlayerConstants.UNSET_WARP_PERMISSION)) {
-				player.sendMessage(this.messageUtils.getErrorPrefix() + " §cYou don't have permission!");
+				player.sendMessage(this.language.NO_PERMISSION);
 				return false;
 			}
 			
 			if (warp == null) {
-				player.sendMessage(this.messageUtils.getErrorPrefix() + " §cThe warp '§r" + warpName + "§c' don't exist!");
+				player.sendMessage(this.language.WARP_DOESNT_EXIST.replace("{warp}", warpName));
 				return false;
 			}
 			
-			Main.getConfigs().getWarpConfig().remove("Warps." + this.environmentUtils.checkPlayerWorld(player) + "." + warpName);
+			Main.getConfigs().getWarpConfig().removeWarp(warpName, playerWorld);
 			
-			player.sendMessage(this.messageUtils.getSucessPrefix() + " §aWarp §r{warp} §awas deleted!".replace("{warp}", warpName));
+			player.sendMessage(this.language.WARP_DELETED.replace("{warp}", warpName));
 			return true;
 		case "config":
 			if (!player.hasPermission(PlayerConstants.CONFIG_WARP_PERMISSION)) {
-				player.sendMessage(this.messageUtils.getErrorPrefix() + " §cYou don't have permission!");
+				player.sendMessage(this.language.NO_PERMISSION);
 				return false;
 			}
 			
 			if (warp == null) {
-				player.sendMessage(this.messageUtils.getErrorPrefix() + " §cThe warp '§r" + warpName + "§c' don't exist!");
+				player.sendMessage(this.language.WARP_DOESNT_EXIST.replace("{warp}", warpName));
 				return false;
 			}
 			
