@@ -11,6 +11,7 @@ import net.jgb.kitPvP.utils.Jumpers;
 import net.jgb.kitPvP.utils.Message;
 import net.jgb.kitPvP.utils.customs.CustomPaginatedInventory;
 import net.jgb.kitPvP.utils.customs.CustomPlayerInventory;
+import net.jgb.kitPvP.utils.languages.Language;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -44,6 +45,7 @@ public class DefaultEvents implements Listener {
 	private Jumpers jumperUtils;
 	private CustomPlayerInventory inventoryUtils;
 	private RootState rootState;
+	private Language language;
 	
 	public DefaultEvents() {
 		this.itemUtils = Main.getUtils().itemUtils();
@@ -51,6 +53,7 @@ public class DefaultEvents implements Listener {
 		this.inventoryUtils = Main.getUtils().customPlayerInventoryUtils();
 		this.jumperUtils = Main.getUtils().jumperUtils();
 		this.rootState = Main.getRootState();
+		this.language = Main.getLanguage();
 	}
 	
     @EventHandler
@@ -105,6 +108,22 @@ public class DefaultEvents implements Listener {
     		this.inventoryUtils.openMenuInventory(player);
     	}
     }
+    
+    @EventHandler
+    public void onOpenBox(PlayerInteractEvent event) {
+    	Player player = event.getPlayer();
+    	
+    	if (player.getItemInHand() == null) return;
+    	
+    	if (!this.itemUtils.checkHeldItem(player, ItemEnum.BOX.getMaterial())) return;
+    	
+    	if (!ChatColor.stripColor(event.getItem().getItemMeta().getDisplayName()).equals(ItemEnum.BOX.getDisplayName())) return;
+    	
+    	if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+    		event.setCancelled(true);
+    		this.inventoryUtils.openBox(player);
+    	}
+    }
 
     @EventHandler
     public void onDrop(PlayerDropItemEvent event) {
@@ -116,7 +135,7 @@ public class DefaultEvents implements Listener {
                       .count() >= 1;
         
     	if (customItem) {
-    		event.getPlayer().sendMessage(this.messageUtils.getErrorPrefix() + " §cYou cannot drop this item!");
+    		event.getPlayer().sendMessage(this.language.CANNOT_DROP);
     		event.setCancelled(true);
     		return;
     	}
