@@ -1,5 +1,10 @@
 package net.jgb.kitPvP.utils;
 
+import net.jgb.kitPvP.enums.LanguagesEnum;
+import net.jgb.kitPvP.utils.languages.English;
+import net.jgb.kitPvP.utils.languages.Language;
+import net.jgb.kitPvP.utils.languages.Portuguese;
+
 public class Message {
 
     public Message() {
@@ -25,5 +30,16 @@ public class Message {
 
     public String getMessagePrefix() {
         return message;
+    }
+    
+    public Language getLanguage(LanguagesEnum language) {
+    	switch (language) {
+        case PORTUGUESE:
+            return new Portuguese();
+        case ENGLISH:
+            return new English();
+        default:
+            throw new IllegalArgumentException("This language doesn't exist in the config!");
+    	}
     }
 }
