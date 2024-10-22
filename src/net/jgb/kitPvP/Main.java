@@ -2,9 +2,11 @@ package net.jgb.kitPvP;
 
 import net.jgb.kitPvP.commands.Commands;
 import net.jgb.kitPvP.configs.InitializeConfigs;
+import net.jgb.kitPvP.enums.LanguagesEnum;
 import net.jgb.kitPvP.events.Listeners;
 import net.jgb.kitPvP.state.RootState;
 import net.jgb.kitPvP.utils.Utils;
+import net.jgb.kitPvP.utils.languages.Language;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -16,13 +18,15 @@ public class Main extends JavaPlugin {
     private static Utils utils;
     private static RootState rootState;
     private static InitializeConfigs configs;
-
+    private static Language language;
+    
     @Override
     public void onLoad() {
         setPlugin(this);
         setRootState(new RootState());
         setUtils(new Utils());
         setConfigs(new InitializeConfigs("warps"));
+        setLanguage(utils.messageUtils().getLanguage(LanguagesEnum.PORTUGUESE));
 
         Bukkit.getConsoleSender().sendMessage(utils.messageUtils().getInformationPrefix() +  " §7plugin loading...");
     }
@@ -86,5 +90,13 @@ public class Main extends JavaPlugin {
     
     private void setConfigs(InitializeConfigs configList) {
     	configs = configList;
+    }
+    
+    private void setLanguage(Language defaultLanguage) {
+    	language = defaultLanguage;
+    }
+    
+    public static Language getLanguage() {
+    	return language;
     }
 }
