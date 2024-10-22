@@ -5,11 +5,14 @@ import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
+import net.jgb.kitPvP.Main;
 import net.jgb.kitPvP.configs.Config;
 import net.jgb.kitPvP.entities.WarpEntity;
+import net.jgb.kitPvP.enums.WarpStateEnum;
 import net.jgb.kitPvP.enums.WorldEnum;
 import net.jgb.kitPvP.mappers.WarpMapper;
 
@@ -75,5 +78,24 @@ public class warpsConfig extends Config {
 	@SuppressWarnings("deprecation")
 	public void changeIcon(ItemStack icon, String warpName, WorldEnum world) {
 		this.getConfig().add("Warps." + world + "." + warpName + ".icon", icon.getType() + ":" + icon.getDurability() + ":" + icon.getData().getData());
+	}
+	
+	public void removeWarp(String warpName, WorldEnum world) {
+		this.getConfig().remove("Warps." + world + "." + warpName);
+	}
+	
+	@SuppressWarnings("deprecation")
+	public void createWarp(String warpName, WorldEnum world, Location location) {
+		ItemStack icon = new ItemStack(Material.REDSTONE_BLOCK);
+		
+		Main.getConfigs().getWarpConfig().createSection("Warps." + world + "." + warpName);
+		Main.getConfigs().getWarpConfig().add("Warps." + world + "." + warpName + ".world", location.getWorld().getName());
+		Main.getConfigs().getWarpConfig().add("Warps." + world + "." + warpName + ".x", location.getX());
+		Main.getConfigs().getWarpConfig().add("Warps." + world + "." + warpName + ".y", location.getY());
+		Main.getConfigs().getWarpConfig().add("Warps." + world + "." + warpName + ".z", location.getZ());
+		Main.getConfigs().getWarpConfig().add("Warps." + world + "." + warpName + ".pitch", location.getPitch());
+		Main.getConfigs().getWarpConfig().add("Warps." + world + "." + warpName + ".yaw", location.getYaw());
+		Main.getConfigs().getWarpConfig().add("Warps." + world + "." + warpName + ".icon", icon.getType() + ":" + icon.getDurability() + ":" + icon.getData().getData());
+		Main.getConfigs().getWarpConfig().add("Warps." + world + "." + warpName + ".state", WarpStateEnum.PUBLIC.getDisplayName());
 	}
 }
