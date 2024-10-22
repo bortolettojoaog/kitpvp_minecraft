@@ -2,13 +2,15 @@ package net.jgb.kitPvP.enums;
 
 import org.bukkit.Material;
 
+import net.jgb.kitPvP.Main;
+
 public enum ItemEnum {
 	
-	BOX("Mystery Box", Material.EMERALD),
-	KIT("Kit Menu", Material.CHEST),
-	TRAIN("Training Arena", Material.DIAMOND_SWORD),
-	NEXT_PAGE("Next Page", Material.ARROW),
-	PREVIOUS_PAGE("Previous Page", Material.ARROW);
+	BOX(Main.getLanguage().BOX_ITEM, Material.EMERALD),
+	KIT(Main.getLanguage().KIT_ITEM, Material.CHEST),
+	TRAIN(Main.getLanguage().TRAIN_ITEM, Material.DIAMOND_SWORD),
+	NEXT_PAGE(Main.getLanguage().NEXT_PAGE_INVENTORY, Material.ARROW),
+	PREVIOUS_PAGE(Main.getLanguage().PREVIOUS_PAGE_INVENTORY, Material.ARROW);
 	
 	String displayName;
 	Material material;
