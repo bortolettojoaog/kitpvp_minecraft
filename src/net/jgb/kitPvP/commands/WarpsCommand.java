@@ -12,21 +12,24 @@ import net.jgb.kitPvP.Main;
 import net.jgb.kitPvP.entities.WarpEntity;
 import net.jgb.kitPvP.utils.Environment;
 import net.jgb.kitPvP.utils.Message;
+import net.jgb.kitPvP.utils.languages.Language;
 
 public class WarpsCommand implements CommandExecutor {
 
 	private Message messageUtils;
 	private Environment environmentUtils;
+	private Language language;
 	
 	public WarpsCommand() {
 		this.messageUtils = Main.getUtils().messageUtils();
 		this.environmentUtils = Main.getUtils().environmentUtils();
+		this.language = Main.getLanguage();
 	}
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String cmd, String[] args) {
 		if (!(sender instanceof Player)) {
-			Bukkit.getConsoleSender().sendMessage(this.messageUtils.getErrorPrefix() + " §cOnly players can execute §rwarps §ccommand!");
+			Bukkit.getConsoleSender().sendMessage(this.language.ONLY_PLAYERS_CAN_RUN_COMMAND.replace("{command}", "warps"));
 			return false;
 		}
 		
@@ -51,7 +54,9 @@ public class WarpsCommand implements CommandExecutor {
 			
 			List<WarpEntity> warps = Main.getConfigs().getWarpConfig().getAllWarpsByWorld(this.environmentUtils.checkPlayerWorld(player));
 			player.sendMessage(this.messageUtils.getInformationPrefix() + " §e§lWARPS");
-			warps.forEach(warp -> player.sendMessage("§7» §e"+warp.getWarpName()));
+			if (warps.size() > 1)
+				warps.forEach(warp -> player.sendMessage("§7» §e"+warp.getWarpName()));
+			player.sendMessage(this.language.NO_WARPS);
 			return true;
 		}
 		return false;
