@@ -1,8 +1,10 @@
 package net.jgb.kitPvP.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import net.jgb.kitPvP.Main;
 import net.jgb.kitPvP.utils.Environment;
@@ -22,8 +24,13 @@ public class TpCommand implements CommandExecutor {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender arg0, Command arg1, String arg2, String[] arg3) {
-		// TODO Auto-generated method stub
+	public boolean onCommand(CommandSender sender, Command command, String cmd, String[] args) {
+		if (cmd.equalsIgnoreCase("tp")) {
+			Player player = (Player) sender;
+			
+			
+			return true;
+		}
 		return false;
 	}
 
