@@ -28,7 +28,21 @@ public class TpCommand implements CommandExecutor {
 		if (cmd.equalsIgnoreCase("tp")) {
 			Player player = (Player) sender;
 			
+			if (args.length < 1 || args.length >= 3) {
+				player.sendMessage(this.messageUtils.getErrorPrefix() + " §c/tp §fhelp§c.");
+				return false;
+			}
 			
+			if (args.length == 1) {
+				if (args[0].equalsIgnoreCase("help")) {
+					player.sendMessage(this.messageUtils.getInformationPrefix() + " §e§lWARP INFO");
+					player.sendMessage("§7» /tp §e<player>");
+					player.sendMessage("§7» /tp §r<player> §e<name>");
+					player.sendMessage("§7» /tp §e<x> <y> <z>");
+					player.sendMessage("§7» /tp §rr");
+					return false;
+				}
+			}
 			return true;
 		}
 		return false;
