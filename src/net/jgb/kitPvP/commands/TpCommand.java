@@ -35,7 +35,7 @@ public class TpCommand implements CommandExecutor {
 			
 			if (args.length == 1) {
 				if (args[0].equalsIgnoreCase("help")) {
-					player.sendMessage(this.messageUtils.getInformationPrefix() + " §e§lWARP INFO");
+					player.sendMessage(this.messageUtils.getInformationPrefix() + " §e§lTP INFO");
 					player.sendMessage("§7» /tp §e<player>");
 					player.sendMessage("§7» /tp §r<player> §e<name>");
 					player.sendMessage("§7» /tp §e<x> <y> <z>");
