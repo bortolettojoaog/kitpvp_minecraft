@@ -1,5 +1,9 @@
 package net.jgb.kitPvP.commands;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Random;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -41,6 +45,19 @@ public class TpCommand implements CommandExecutor {
 					player.sendMessage("§7» /tp §e<x> <y> <z>");
 					player.sendMessage("§7» /tp §rr");
 					return false;
+				} else if (args[0].equalsIgnoreCase("r")) {
+					Player[] players = Bukkit.getOnlinePlayers().toArray(new Player[0]);
+					Random random = new Random();
+			        int randomIndex = random.nextInt(players.length);
+			        
+			        if (!(sender instanceof Player)) {
+			        	Bukkit.getConsoleSender().sendMessage(this.language.ONLY_PLAYERS_CAN_RUN_COMMAND.replace("{command}", "tp r"));
+						return false;
+			        }
+			        Player alvo = players[randomIndex];
+			        
+			        player.teleport(alvo);
+			        player.sendMessage(this.language.TELEPORTED_TO_RANDOM_PLAYER.replace("{player}", alvo.getName()));
 				}
 			}
 			return true;
