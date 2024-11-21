@@ -49,5 +49,7 @@ public class English extends Language {
 	    this.CURRENT_PAGE = "Current Page: ";
 	    
 	    this.CURRENT_STATE = "Current State: ";
+	    
+	    this.TELEPORTED_TO_RANDOM_PLAYER = "§aTeleported to a random player named §r{player}";
 	}
 }
