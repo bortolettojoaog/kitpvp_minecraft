@@ -49,5 +49,7 @@ public class Portuguese extends Language {
 	    this.CURRENT_PAGE = "Página Atual: ";
 	    
 	    this.CURRENT_STATE = "Estado Atual: ";
+	    
+	    this.TELEPORTED_TO_RANDOM_PLAYER = "§aTeleportado para o jogador aletório §r{player}";
 	}
 }
