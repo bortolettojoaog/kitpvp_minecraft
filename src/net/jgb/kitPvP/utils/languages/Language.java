@@ -26,6 +26,7 @@ public abstract class Language {
     public String CURRENT_PAGE;
     public String CURRENT_NAME;
     public String CURRENT_STATE;
+    public String TELEPORTED_TO_RANDOM_PLAYER;
 
     public Language() {
         this.setMessageUtils(Main.getUtils().messageUtils());
