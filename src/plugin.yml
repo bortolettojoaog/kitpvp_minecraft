@@ -7,3 +7,5 @@ commands:
     description: Comando para criacao, delecao e configuracao de warp.
   warps:
     description: Comando para listagem de warps.
+  tp:
+    description: Comando para teleportar para localizacoes, usuarios, etc.
