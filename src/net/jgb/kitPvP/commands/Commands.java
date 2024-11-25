@@ -7,6 +7,6 @@ public class Commands {
 	public Commands() {
 		Main.getPlugin().getCommand("warp").setExecutor(new WarpCommand());
 		Main.getPlugin().getCommand("warps").setExecutor(new WarpsCommand());
+		Main.getPlugin().getCommand("tp").setExecutor(new TpCommand());
 	}
-
 }
